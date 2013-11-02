@@ -2,6 +2,8 @@ package rekkyn.automusic;
 
 import java.util.ArrayList;
 
+import rekkyn.automusic.MidiFile.Track;
+
 public class Chord {
     
     public ArrayList<Integer> notes = new ArrayList<Integer>();
@@ -103,13 +105,13 @@ public class Chord {
     public void play(int length) {
         
         for (int note : notes) {
-            Main.mf.noteOn(0, note, 127);
+            Main.mf.noteOn(0, note, 127, Track.CHORDS);
         }
         
-        Main.mf.noteOff(length, notes.get(0));
+        Main.mf.noteOff(length, notes.get(0), Track.CHORDS);
         
         for (int note : notes) {
-            Main.mf.noteOff(0, note);
+            Main.mf.noteOff(0, note, Track.CHORDS);
         }
     }
     
