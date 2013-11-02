@@ -2,6 +2,8 @@ package rekkyn.automusic;
 
 import rekkyn.automusic.Chord.Progression;
 
+
+
 public class Main {
     
     // Note lengths
@@ -66,10 +68,11 @@ public class Main {
         mf.writeToFile("test1.mid");
          */
         
-        Progression p = new Progression(new String[] { "C", "G", "Am", "F" });
+        Progression p = new Progression(new String[] { "Am", "E", "C#m", "G", "Bm", "C", "D", "F", "Abm" });
         
         p.play();
         
         mf.writeToFile("test1.mid");
+        
     }
 }

@@ -4,89 +4,37 @@ import java.util.ArrayList;
 
 public class Chord {
     
-    int note1 = 0;
-    int note2 = 0;
-    int note3 = 0;
+    public ArrayList<Integer> notes = new ArrayList<Integer>();
     
     public Chord(String s) {
-        char root = s.charAt(0);
-        
-        switch (root) {
-        case 'F':
-            note1 = 53;
-            break;
-        case 'G':
-            note1 = 55;
-            break;
-        case 'A':
-            note1 = 57;
-            break;
-        case 'B':
-            note1 = 59;
-            break;
-        case 'C':
-            note1 = 60;
-            break;
-        case 'D':
-            note1 = 62;
-            break;
-        case 'E':
-            note1 = 63;
-            break;
-        default:
-            System.out.println("Ya dun gooft.");
-            break;
-        }
-        
-        if (s.contains("b") && s.contains("#")) {
-            System.out.println("Nice try.");
-        } else if (s.contains("b")) {
-            if (root == 'C' || root == 'F') {
-                System.out.println("How bout no.");
-            } else {
-                note1--;
-            }
-        } else if (s.contains("#")) {
-            if (root == 'B' || root == 'E') {
-                System.out.println("How bout no.");
-            } else {
-                note1++;
-            }
-        }
-        
-        if (s.contains("m")) {
-            note2 = note1 + 3;
-        } else {
-            note2 = note1 + 4;
-        }
-        
-        note3 = note1 + 7;
+        this(null, s);
     }
     
     public Chord(Chord prevChord, String s) {
         char root = s.charAt(0);
+        int rootNum = 0;
         
         switch (root) {
         case 'F':
-            note1 = 53;
+            rootNum = 53;
             break;
         case 'G':
-            note1 = 55;
+            rootNum = 55;
             break;
         case 'A':
-            note1 = 57;
+            rootNum = 57;
             break;
         case 'B':
-            note1 = 59;
+            rootNum = 59;
             break;
         case 'C':
-            note1 = 60;
+            rootNum = 60;
             break;
         case 'D':
-            note1 = 62;
+            rootNum = 62;
             break;
         case 'E':
-            note1 = 63;
+            rootNum = 64;
             break;
         default:
             System.out.println("Ya dun gooft.");
@@ -96,36 +44,89 @@ public class Chord {
         if (s.contains("b") && s.contains("#")) {
             System.out.println("Nice try.");
         } else if (s.contains("b")) {
-            if (root == 'C' || root == 'F') {
-                System.out.println("How bout no.");
-            } else {
-                note1--;
-            }
+            rootNum--;
         } else if (s.contains("#")) {
-            if (root == 'B' || root == 'E') {
-                System.out.println("How bout no.");
-            } else {
-                note1++;
+            rootNum++;
+        }
+        
+        ArrayList<Integer> newnotes = new ArrayList<Integer>();
+        if (rootNum != 0) {
+            newnotes.add(rootNum);
+            newnotes.add(s.contains("m") ? rootNum + 3 : rootNum + 4);
+            newnotes.add(rootNum + 7);
+        } else {
+            newnotes = prevChord.notes;
+        }
+        
+        int closest = newnotes.get(0);
+        if (prevChord != null) {
+            for (int newNote : newnotes) {
+                if (distanceBetweenNotes(prevChord.notes.get(0), newNote) <= distanceBetweenNotes(prevChord.notes.get(0), closest)) {
+                    closest = prevChord.notes.get(0) + relDistanceBetweenNotes(prevChord.notes.get(0), newNote);
+                }
+            }
+        }
+        System.out.println(closest);
+        
+        if (!newnotes.contains(closest)) {
+            if (closest < newnotes.get(0)) {
+                newnotes.set(0, newnotes.get(0) - 12);
+                newnotes.set(1, newnotes.get(1) - 12);
+                newnotes.set(2, newnotes.get(2) - 12);
+            } else if (closest > newnotes.get(0)) {
+                newnotes.set(1, newnotes.get(1) + 12);
+                newnotes.set(0, newnotes.get(0) + 12);
+                newnotes.set(2, newnotes.get(2) + 12);
             }
         }
         
-        if (s.contains("m")) {
-            note2 = note1 + 3;
+        if (newnotes.indexOf(closest) != 0) {
+            for (int i = 0; i < newnotes.size(); i++) {
+                if (newnotes.indexOf(closest) == 1) {
+                    notes.clear();
+                    notes.add(newnotes.get(1));
+                    notes.add(newnotes.get(2));
+                    notes.add(newnotes.get(0) + 12);
+                } else if (newnotes.indexOf(closest) == 2) {
+                    notes.clear();
+                    notes.add(newnotes.get(2));
+                    notes.add(newnotes.get(0) + 12);
+                    notes.add(newnotes.get(1) + 12);
+                }
+            }
         } else {
-            note2 = note1 + 4;
+            notes = newnotes;
         }
         
-        note3 = note1 + 7;
     }
     
     public void play(int length) {
-        Main.mf.noteOn(0, note1, 127);
-        Main.mf.noteOn(0, note2, 127);
-        Main.mf.noteOn(0, note3, 127);
         
-        Main.mf.noteOff(length, note1);
-        Main.mf.noteOff(0, note2);
-        Main.mf.noteOff(0, note3);
+        for (int note : notes) {
+            Main.mf.noteOn(0, note, 127);
+        }
+        
+        Main.mf.noteOff(length, notes.get(0));
+        
+        for (int note : notes) {
+            Main.mf.noteOff(0, note);
+        }
+    }
+    
+    public static int distanceBetweenNotes(int a, int b) {
+        int n = Math.abs(a % 12 - b % 12);
+        if (n > 6)
+            return 12 - n;
+        else
+            return n;
+    }
+    
+    public static int relDistanceBetweenNotes(int a, int b) {
+        int n = b % 12 - a % 12;
+        if (n > 6)
+            return 12 - n;
+        else
+            return n;
     }
     
     public static class Progression {
@@ -133,8 +134,12 @@ public class Chord {
         public ArrayList<Chord> progression = new ArrayList<Chord>();
         
         public Progression(String[] s) {
-            for (String element : s) {
-                progression.add(new Chord(element));
+            for (int i = 0; i < s.length; i++) {
+                if (i == 0) {
+                    progression.add(new Chord(s[i]));
+                } else {
+                    progression.add(new Chord(progression.get(progression.size() - 1), s[i]));
+                }
             }
         }
         
