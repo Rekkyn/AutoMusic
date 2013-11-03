@@ -68,7 +68,6 @@ public class Chord {
                 }
             }
         }
-        System.out.println(closest);
         
         if (!newnotes.contains(closest)) {
             if (closest < newnotes.get(0)) {
@@ -126,7 +125,7 @@ public class Chord {
     public static int relDistanceBetweenNotes(int a, int b) {
         int n = b % 12 - a % 12;
         if (n > 6)
-            return 12 - n;
+            return n - 12;
         else
             return n;
     }
