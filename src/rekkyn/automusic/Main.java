@@ -70,14 +70,33 @@ public class Main {
         mf.writeToFile("test1.mid");
          */
         
-        Song song = new Song().setProgression(new String[] { "C", "G", "Am", "F" });
+        Song song = new Song().setProgression(new String[] { "A", "C", "E", "A", "B", "C", "D", "G" });
         
+        mf.progChange(10, Track.CHORDS);
         song.add(new ClosestChord(), Track.CHORDS);
-        mf.progChange(10, Track.BASS);
+        mf.progChange(42, Track.BASS);
         song.add(new AlternatingOctave(), Track.BASS);
-        
         
         mf.writeToFile("test1.mid");
         
     }
+    
+    public static int distanceBetweenNotes(int a, int b) {
+        int n = Math.abs(a % 12 - b % 12);
+        if (n > 6)
+            return 12 - n;
+        else
+            return n;
+    }
+    
+    public static int relDistanceBetweenNotes(int a, int b) {
+        int n = b % 12 - a % 12;
+        if (n > 6)
+            return n - 12;
+        else if (n < -6)
+            return n + 12;
+        else
+            return n;
+    }
+    
 }

@@ -3,10 +3,9 @@ package rekkyn.automusic.chords;
 import java.util.ArrayList;
 
 import rekkyn.automusic.Main;
-import rekkyn.automusic.MidiFile;
+import rekkyn.automusic.MidiFile.Track;
 import rekkyn.automusic.Pattern;
 import rekkyn.automusic.Song;
-import rekkyn.automusic.MidiFile.Track;
 
 public class ClosestChord implements Pattern {
     
@@ -64,8 +63,8 @@ public class ClosestChord implements Pattern {
         int closest = newnotes.get(0);
         if (!prevNotes.isEmpty()) {
             for (int newNote : newnotes) {
-                if (distanceBetweenNotes(prevNotes.get(0), newNote) <= distanceBetweenNotes(prevNotes.get(0), closest)) {
-                    closest = prevNotes.get(0) + relDistanceBetweenNotes(prevNotes.get(0), newNote);
+                if (Main.distanceBetweenNotes(prevNotes.get(0), newNote) <= Main.distanceBetweenNotes(prevNotes.get(0), closest)) {
+                    closest = prevNotes.get(0) + Main.relDistanceBetweenNotes(prevNotes.get(0), newNote);
                 }
             }
         }
@@ -121,20 +120,5 @@ public class ClosestChord implements Pattern {
         }
     }
     
-    public static int distanceBetweenNotes(int a, int b) {
-        int n = Math.abs(a % 12 - b % 12);
-        if (n > 6)
-            return 12 - n;
-        else
-            return n;
-    }
-    
-    public static int relDistanceBetweenNotes(int a, int b) {
-        int n = b % 12 - a % 12;
-        if (n > 6)
-            return n - 12;
-        else
-            return n;
-    }
     
 }
