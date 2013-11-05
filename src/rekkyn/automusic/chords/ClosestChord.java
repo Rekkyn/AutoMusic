@@ -12,44 +12,14 @@ public class ClosestChord implements Pattern {
     public ArrayList<Integer> notes = new ArrayList<Integer>();
     public ArrayList<Integer> prevNotes = new ArrayList<Integer>();
     
+    int length = Main.WHOLE;
+    
+    public ClosestChord(int length) {
+        this.length = length;
+    }
+    
     public void getNotes(String s) {
-        char root = s.charAt(0);
-        int rootNum = 0;
-        
-        switch (root) {
-        case 'F':
-            rootNum = 53;
-            break;
-        case 'G':
-            rootNum = 55;
-            break;
-        case 'A':
-            rootNum = 57;
-            break;
-        case 'B':
-            rootNum = 59;
-            break;
-        case 'C':
-            rootNum = 60;
-            break;
-        case 'D':
-            rootNum = 62;
-            break;
-        case 'E':
-            rootNum = 64;
-            break;
-        default:
-            System.out.println("Ya dun gooft.");
-            break;
-        }
-        
-        if (s.contains("b") && s.contains("#")) {
-            System.out.println("Nice try.");
-        } else if (s.contains("b")) {
-            rootNum--;
-        } else if (s.contains("#")) {
-            rootNum++;
-        }
+        int rootNum = Main.getRootFromChord(s);
         
         ArrayList<Integer> newnotes = new ArrayList<Integer>();
         if (rootNum != 0) {
@@ -105,15 +75,16 @@ public class ClosestChord implements Pattern {
     public void play(Track track) {
         for (String chord : Song.progression) {
             getNotes(chord);
-            int length = Main.WHOLE;
-            for (int note : notes) {
-                Main.mf.noteOn(0, note, 127, track);
-            }
-            
-            Main.mf.noteOff(length, notes.get(0), track);
-            
-            for (int note : notes) {
-                Main.mf.noteOff(0, note, track);
+            for (int i = 0; i < 64 / length; i++) {
+                for (int note : notes) {
+                    Main.mf.noteOn(0, note, 127, track);
+                }
+                
+                Main.mf.noteOff(length, notes.get(0), track);
+                
+                for (int note : notes) {
+                    Main.mf.noteOff(0, note, track);
+                }
             }
             prevNotes = (ArrayList<Integer>) notes.clone();
             notes.clear();

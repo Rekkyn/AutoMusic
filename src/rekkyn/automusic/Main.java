@@ -1,7 +1,7 @@
 package rekkyn.automusic;
 
 import rekkyn.automusic.MidiFile.Track;
-import rekkyn.automusic.bass.AlternatingOctave;
+import rekkyn.automusic.bass.SixteethBass;
 import rekkyn.automusic.chords.ClosestChord;
 
 
@@ -23,59 +23,14 @@ public class Main {
     
     public static MidiFile mf = new MidiFile();
     
-    /**
-     * Test method Ñ creates a file test1.mid when the class is executed
-     */
     public static void main(String[] args) throws Exception {
-        /*
-        // Test 1 Ñ play a C major chord
         
-        // Turn on all three notes at start-of-track (delta=0)
-        mf.noteOn(0, 60, 127);
-        mf.noteOn(0, 64, 127);
-        mf.noteOn(0, 67, 127);
+        Song song = new Song().setProgression(new String[] { "C", "G", "Am", "F" });
         
-        // Turn off all three notes after one minim.
-        // NOTE delta value is cumulative Ñ only _one_ of
-        // these note-offs has a non-zero delta. The second and
-        // third events are relative to the first
-        mf.noteOff(HALF, 60);
-        mf.noteOff(0, 64);
-        mf.noteOff(0, 67);
-        
-        // Test 2 Ñ play a scale using noteOnOffNow
-        // We don't need any delta values here, so long as one
-        // note comes straight after the previous one
-        
-        mf.noteOnOffNow(EIGHTH, 60, 127);
-        mf.noteOnOffNow(EIGHTH, 62, 127);
-        mf.noteOnOffNow(EIGHTH, 64, 127);
-        mf.noteOnOffNow(EIGHTH, 65, 127);
-        mf.noteOnOffNow(EIGHTH, 67, 127);
-        mf.noteOnOffNow(EIGHTH, 69, 127);
-        mf.noteOnOffNow(EIGHTH, 71, 127);
-        mf.noteOnOffNow(EIGHTH, 72, 127);
-        
-        // Test 3 Ñ play a short tune using noteSequenceFixedVelocity
-        // Note the rest inserted with a note value of -1
-        
-        int[] sequence = new int[] { 60, EIGHTH + SIXTEENTH, 65, SIXTEENTH, 70, QUARTER + EIGHTH, 69, EIGHTH, 65, EIGHTH / 3, 62,
-                EIGHTH / 3, 67, EIGHTH / 3, 72, HALF + EIGHTH, -1, SIXTEENTH, 72, SIXTEENTH, 76, HALF, };
-        
-        // What the heck Ñ use a different instrument for a change
-        mf.progChange(18);
-        
-        mf.noteSequenceFixedVelocity(sequence, 127);
-        
-        mf.writeToFile("test1.mid");
-         */
-        
-        Song song = new Song().setProgression(new String[] { "A", "C", "E", "A", "B", "C", "D", "G" });
-        
-        mf.progChange(10, Track.CHORDS);
-        song.add(new ClosestChord(), Track.CHORDS);
-        mf.progChange(42, Track.BASS);
-        song.add(new AlternatingOctave(), Track.BASS);
+        // mf.progChange(10, Track.CHORDS);
+        song.add(new ClosestChord(QUARTER), Track.CHORDS);
+        // mf.progChange(42, Track.BASS);
+        song.add(new SixteethBass(), Track.BASS);
         
         mf.writeToFile("test1.mid");
         
@@ -97,6 +52,47 @@ public class Main {
             return n + 12;
         else
             return n;
+    }
+    
+    public static int getRootFromChord(String s) {
+        char root = s.charAt(0);
+        int rootNum = 0;
+        switch (root) {
+        case 'F':
+            rootNum = 53;
+            break;
+        case 'G':
+            rootNum = 55;
+            break;
+        case 'A':
+            rootNum = 57;
+            break;
+        case 'B':
+            rootNum = 59;
+            break;
+        case 'C':
+            rootNum = 60;
+            break;
+        case 'D':
+            rootNum = 62;
+            break;
+        case 'E':
+            rootNum = 64;
+            break;
+        default:
+            System.out.println("Ya dun gooft.");
+            break;
+        }
+        
+        if (s.contains("b") && s.contains("#")) {
+            System.out.println("Nice try.");
+        } else if (s.contains("b")) {
+            rootNum--;
+        } else if (s.contains("#")) {
+            rootNum++;
+        }
+        return rootNum;
+        
     }
     
 }
