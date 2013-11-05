@@ -1,6 +1,8 @@
 package rekkyn.automusic;
 
-import rekkyn.automusic.Chord.Progression;
+import rekkyn.automusic.MidiFile.Track;
+import rekkyn.automusic.bass.AlternatingOctave;
+import rekkyn.automusic.chords.ClosestChord;
 
 
 
@@ -13,13 +15,13 @@ public class Main {
     // represent with this code is one tick short of a
     // two semibreves (i.e., 8 crotchets)
     
-    static final int SIXTEENTH = 4;
-    static final int EIGHTH = 8;
-    static final int QUARTER = 16;
-    static final int HALF = 32;
-    static final int WHOLE = 64;
+    public static final int SIXTEENTH = 4;
+    public static final int EIGHTH = 8;
+    public static final int QUARTER = 16;
+    public static final int HALF = 32;
+    public static final int WHOLE = 64;
     
-    static MidiFile mf = new MidiFile();
+    public static MidiFile mf = new MidiFile();
     
     /**
      * Test method Ñ creates a file test1.mid when the class is executed
@@ -68,9 +70,12 @@ public class Main {
         mf.writeToFile("test1.mid");
          */
         
-        Progression p = new Progression(new String[] { "Am", "E", "C#m", "G", "Bm", "C", "D", "F", "Abm" });
+        Song song = new Song().setProgression(new String[] { "C", "G", "Am", "F" });
         
-        p.play();
+        song.add(new ClosestChord(), Track.CHORDS);
+        mf.progChange(10, Track.BASS);
+        song.add(new AlternatingOctave(), Track.BASS);
+        
         
         mf.writeToFile("test1.mid");
         

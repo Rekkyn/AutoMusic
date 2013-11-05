@@ -1,18 +1,19 @@
-package rekkyn.automusic;
+package rekkyn.automusic.chords;
 
 import java.util.ArrayList;
 
+import rekkyn.automusic.Main;
+import rekkyn.automusic.MidiFile;
+import rekkyn.automusic.Pattern;
+import rekkyn.automusic.Song;
 import rekkyn.automusic.MidiFile.Track;
 
-public class Chord {
+public class ClosestChord implements Pattern {
     
     public ArrayList<Integer> notes = new ArrayList<Integer>();
+    public ArrayList<Integer> prevNotes = new ArrayList<Integer>();
     
-    public Chord(String s) {
-        this(null, s);
-    }
-    
-    public Chord(Chord prevChord, String s) {
+    public void getNotes(String s) {
         char root = s.charAt(0);
         int rootNum = 0;
         
@@ -57,14 +58,14 @@ public class Chord {
             newnotes.add(s.contains("m") ? rootNum + 3 : rootNum + 4);
             newnotes.add(rootNum + 7);
         } else {
-            newnotes = prevChord.notes;
+            newnotes = prevNotes;
         }
         
         int closest = newnotes.get(0);
-        if (prevChord != null) {
+        if (!prevNotes.isEmpty()) {
             for (int newNote : newnotes) {
-                if (distanceBetweenNotes(prevChord.notes.get(0), newNote) <= distanceBetweenNotes(prevChord.notes.get(0), closest)) {
-                    closest = prevChord.notes.get(0) + relDistanceBetweenNotes(prevChord.notes.get(0), newNote);
+                if (distanceBetweenNotes(prevNotes.get(0), newNote) <= distanceBetweenNotes(prevNotes.get(0), closest)) {
+                    closest = prevNotes.get(0) + relDistanceBetweenNotes(prevNotes.get(0), newNote);
                 }
             }
         }
@@ -101,16 +102,22 @@ public class Chord {
         
     }
     
-    public void play(int length) {
-        
-        for (int note : notes) {
-            Main.mf.noteOn(0, note, 127, Track.CHORDS);
-        }
-        
-        Main.mf.noteOff(length, notes.get(0), Track.CHORDS);
-        
-        for (int note : notes) {
-            Main.mf.noteOff(0, note, Track.CHORDS);
+    @Override
+    public void play(Track track) {
+        for (String chord : Song.progression) {
+            getNotes(chord);
+            int length = Main.WHOLE;
+            for (int note : notes) {
+                Main.mf.noteOn(0, note, 127, track);
+            }
+            
+            Main.mf.noteOff(length, notes.get(0), track);
+            
+            for (int note : notes) {
+                Main.mf.noteOff(0, note, track);
+            }
+            prevNotes = (ArrayList<Integer>) notes.clone();
+            notes.clear();
         }
     }
     
@@ -130,24 +137,4 @@ public class Chord {
             return n;
     }
     
-    public static class Progression {
-        
-        public ArrayList<Chord> progression = new ArrayList<Chord>();
-        
-        public Progression(String[] s) {
-            for (int i = 0; i < s.length; i++) {
-                if (i == 0) {
-                    progression.add(new Chord(s[i]));
-                } else {
-                    progression.add(new Chord(progression.get(progression.size() - 1), s[i]));
-                }
-            }
-        }
-        
-        public void play() {
-            for (Chord c : progression) {
-                c.play(Main.QUARTER);
-            }
-        }
-    }
 }

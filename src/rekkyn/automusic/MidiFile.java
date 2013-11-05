@@ -28,12 +28,10 @@ public class MidiFile {
     static final int footer[] = new int[] { 0x01, 0xFF, 0x2F, 0x00 };
     
     // A MIDI event to set the tempo
-    static final int tempoEvent[] = new int[] { 0x00, 0xFF, 0x51, 0x03, 0x0F, 0x42, 0x40 // Default
-        // 1
-        // million
-        // usec
-        // per
-        // crotchet
+    static final int tempoEvent[] = new int[] { 0x00, 0xFF, 0x51, 0x03,//
+        0x05, 0xB8, 0xD8 // 160 BPM (to get this, find how many seconds per
+        // beat, convert to microseconds, then into
+        // hexidecimal, that split into the 3 bytes)
     };
     
     // A MIDI event to set the key signature. This is irrelent to
@@ -225,7 +223,7 @@ public class MidiFile {
         }
     }
     
-    enum Track {
+    public enum Track {
         BASS, CHORDS, MELODY
     }
 }
