@@ -55,8 +55,8 @@ public class MidiFile {
     
     /** Construct a new MidiFile with an empty playback event list */
     public MidiFile() {
-        tracks.add(bassTrack);
         tracks.add(chordTrack);
+        tracks.add(bassTrack);
         tracks.add(melodyTrack);
     }
     
@@ -124,7 +124,7 @@ public class MidiFile {
     public void noteOn(int delta, int note, int velocity, Track track) {
         int[] data = new int[4];
         data[0] = delta;
-        data[1] = 0x90;
+        data[1] = 0x90 + Track.toInt(track);
         data[2] = note;
         data[3] = velocity;
         switch (track) {
@@ -147,7 +147,7 @@ public class MidiFile {
     public void noteOff(int delta, int note, Track track) {
         int[] data = new int[4];
         data[0] = delta;
-        data[1] = 0x80;
+        data[1] = 0x80 + Track.toInt(track);
         data[2] = note;
         data[3] = 0;
         switch (track) {
@@ -170,7 +170,7 @@ public class MidiFile {
     public void progChange(int prog, Track track) {
         int[] data = new int[3];
         data[0] = 0;
-        data[1] = 0xC0;
+        data[1] = 0xC0 + Track.toInt(track);
         data[2] = prog;
         switch (track) {
         case BASS:
@@ -224,6 +224,18 @@ public class MidiFile {
     }
     
     public enum Track {
-        BASS, CHORDS, MELODY
+        BASS, CHORDS, MELODY;
+        public static int toInt(Track track) {
+            switch (track) {
+            case CHORDS:
+                return 0;
+            case BASS:
+                return 1;
+            case MELODY:
+                return 2;
+            default:
+                return 0;
+            }
+        }
     }
 }

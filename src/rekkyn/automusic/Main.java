@@ -1,7 +1,7 @@
 package rekkyn.automusic;
 
 import rekkyn.automusic.MidiFile.Track;
-import rekkyn.automusic.bass.SixteethBass;
+import rekkyn.automusic.bass.PopcornBass;
 import rekkyn.automusic.chords.ClosestChord;
 
 
@@ -25,12 +25,12 @@ public class Main {
     
     public static void main(String[] args) throws Exception {
         
-        Song song = new Song().setProgression(new String[] { "C", "G", "Am", "F" });
+        Song song = new Song().setProgression(new String[] { "C", "Bb", "F#", "Eb" });
         
-        // mf.progChange(10, Track.CHORDS);
-        song.add(new ClosestChord(QUARTER), Track.CHORDS);
-        // mf.progChange(42, Track.BASS);
-        song.add(new SixteethBass(), Track.BASS);
+        mf.progChange(0, Track.CHORDS);
+        song.add(new ClosestChord(WHOLE), Track.CHORDS);
+        mf.progChange(33, Track.BASS);
+        song.add(new PopcornBass(), Track.BASS);
         
         mf.writeToFile("test1.mid");
         

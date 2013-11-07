@@ -5,7 +5,7 @@ import rekkyn.automusic.MidiFile.Track;
 import rekkyn.automusic.Pattern;
 import rekkyn.automusic.Song;
 
-public class SixteethBass implements Pattern {
+public class SixteenthBass implements Pattern {
     
     int prevNote = 0;
     
