@@ -27,7 +27,14 @@ public class ClosestChord implements Pattern {
             newnotes.add(s.contains("m") ? rootNum + 3 : rootNum + 4);
             newnotes.add(rootNum + 7);
         } else {
-            newnotes = prevNotes;
+            notes.clear();
+            notes.add(48);
+            notes.add(52);
+            notes.add(55);
+            notes.add(66);
+            notes.add(69);
+            notes.add(74);
+            return;
         }
         
         int closest = newnotes.get(0);

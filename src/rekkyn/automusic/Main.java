@@ -25,7 +25,7 @@ public class Main {
     
     public static void main(String[] args) throws Exception {
         
-        Song song = new Song().setProgression(new String[] { "C", "Bb", "F#", "Eb" });
+        Song song = new Song().setProgression(new String[] { "C", "Bb", "F#", "Eb", "S" });
         
         mf.progChange(0, Track.CHORDS);
         song.add(new ClosestChord(WHOLE), Track.CHORDS);
