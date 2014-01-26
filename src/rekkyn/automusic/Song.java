@@ -17,7 +17,6 @@ public class Song {
         return this;
     }
     
-    
     public Song setChordLength(Integer[] i) {
         for (int Int : i) {
             if (Int % 16 != 0) {

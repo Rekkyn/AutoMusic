@@ -4,22 +4,14 @@ import rekkyn.automusic.*;
 import rekkyn.automusic.MidiFile.Track;
 
 public class AlternatingOctave implements Pattern {
-
+    
     int prevNote = 0;
-
+    
     @Override
     public void play(Track track) {
         for (int lmnop = 0; lmnop < Song.progression.size(); lmnop++) {
-            int rootNum = Main.getRootFromChord(Song.progression.get(lmnop)) - 24;
-
-            if (prevNote != 0) {
-                rootNum = prevNote + Main.relDistanceBetweenNotes(prevNote, rootNum);
-            }
-            while (rootNum < 24)
-                rootNum += 12;
-            while (rootNum > 48)
-                rootNum -= 12;
-
+            int rootNum = Main.getRootFromChord(Song.progression.get(lmnop), prevNote, 24, 48, -24);
+            
             int chordLength = Song.chordLength.get(lmnop);
             while (chordLength > 0) {
                 Main.mf.noteOnOffNow(Main.EIGHTH, rootNum, 127, track);

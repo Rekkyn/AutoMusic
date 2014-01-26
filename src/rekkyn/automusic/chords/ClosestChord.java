@@ -1,26 +1,24 @@
 package rekkyn.automusic.chords;
 
-import rekkyn.automusic.Main;
-import rekkyn.automusic.MidiFile.Track;
-import rekkyn.automusic.Pattern;
-import rekkyn.automusic.Song;
-
 import java.util.ArrayList;
 
-public class ClosestChord implements Pattern {
+import rekkyn.automusic.*;
+import rekkyn.automusic.MidiFile.Track;
 
+public class ClosestChord implements Pattern {
+    
     public ArrayList<Integer> notes = new ArrayList<Integer>();
     public ArrayList<Integer> prevNotes = new ArrayList<Integer>();
-
+    
     int length = Main.WHOLE;
-
+    
     public ClosestChord(int length) {
         this.length = length;
     }
-
+    
     public void getNotes(String s) {
         int rootNum = Main.getRootFromChord(s);
-
+        
         ArrayList<Integer> newnotes = new ArrayList<Integer>();
         if (rootNum != 0) {
             newnotes.add(rootNum);
@@ -36,17 +34,16 @@ public class ClosestChord implements Pattern {
             notes.add(74);
             return;
         }
-
+        
         int closest = newnotes.get(0);
         if (!prevNotes.isEmpty()) {
             for (int newNote : newnotes) {
-                if (Main.distanceBetweenNotes(prevNotes.get(0), newNote) <= Main
-                        .distanceBetweenNotes(prevNotes.get(0), closest)) {
+                if (Main.distanceBetweenNotes(prevNotes.get(0), newNote) <= Main.distanceBetweenNotes(prevNotes.get(0), closest)) {
                     closest = prevNotes.get(0) + Main.relDistanceBetweenNotes(prevNotes.get(0), newNote);
                 }
             }
         }
-
+        
         if (!newnotes.contains(closest)) {
             if (closest < newnotes.get(0)) {
                 newnotes.set(0, newnotes.get(0) - 12);
@@ -58,7 +55,7 @@ public class ClosestChord implements Pattern {
                 newnotes.set(2, newnotes.get(2) + 12);
             }
         }
-
+        
         if (newnotes.indexOf(closest) != 0) {
             for (int i = 0; i < newnotes.size(); i++) {
                 if (newnotes.indexOf(closest) == 1) {
@@ -76,9 +73,9 @@ public class ClosestChord implements Pattern {
         } else {
             notes = newnotes;
         }
-
+        
     }
-
+    
     @Override
     public void play(Track track) {
         for (int lmnop = 0; lmnop < Song.progression.size(); lmnop++) {
@@ -91,24 +88,23 @@ public class ClosestChord implements Pattern {
                 } else {
                     playLength = chordLength;
                 }
-
+                
                 for (int note : notes) {
                     Main.mf.noteOn(0, note, 127, track);
                 }
-
+                
                 Main.mf.noteOff(playLength, notes.get(0), track);
-
+                
                 for (int note : notes) {
                     Main.mf.noteOff(0, note, track);
                 }
-
+                
                 chordLength -= playLength;
-
+                
             }
             prevNotes = (ArrayList<Integer>) notes.clone();
             notes.clear();
         }
     }
-
-
+    
 }

@@ -1,5 +1,11 @@
 package rekkyn.automusic;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import javax.sound.midi.*;
+
 import rekkyn.automusic.MidiFile.Track;
 import rekkyn.automusic.bass.PopcornBass;
 import rekkyn.automusic.chords.ClosestChord;
@@ -11,26 +17,34 @@ public class Main {
     public static final int QUARTER = 16;
     public static final int HALF = 32;
     public static final int WHOLE = 64;
-
+    
     public static MidiFile mf = new MidiFile();
-
+    
     public static void main(String[] args) throws Exception {
-
-        Song song = new Song().setProgression(new String[]{"C", "Bb", "F#", "Eb", "S"})
-                              .setChordLength(new Integer[]{WHOLE, WHOLE, HALF + QUARTER, QUARTER, WHOLE});
-
+        
+        Song song = new Song().setProgression(new String[] { "C", "Bb", "F#", "Eb", "S" }).setChordLength(
+                new Integer[] { WHOLE, WHOLE, HALF + QUARTER, QUARTER, WHOLE });
+        
         mf.progChange(0, Track.CHORDS);
         song.add(new ClosestChord(HALF), Track.CHORDS);
         mf.progChange(33, Track.BASS);
         song.add(new PopcornBass(), Track.BASS);
-
+        
         mf.writeToFile("test1.mid");
-
+        
+        try {
+            Sequence sequence = MidiSystem.getSequence(new File("test1.mid"));
+            Sequencer sequencer = MidiSystem.getSequencer();
+            sequencer.open();
+            sequencer.setSequence(sequence);
+            sequencer.start();
+        } catch (MalformedURLException e) {} catch (IOException e) {} catch (MidiUnavailableException e) {} catch (InvalidMidiDataException e) {}
+        
     }
     
     /** @param a first note
      * @param b second note
-     * @return the absoluet distance between the two notes */
+     * @return the absolute distance between the two notes */
     public static int distanceBetweenNotes(int a, int b) {
         int n = Math.abs(a % 12 - b % 12);
         if (n > 6)
@@ -84,7 +98,7 @@ public class Main {
                 System.out.println("Ya dun gooft.");
                 break;
         }
-
+        
         if (s.contains("b") && s.contains("#")) {
             System.out.println("Nice try.");
         } else if (s.contains("b")) {
@@ -93,15 +107,21 @@ public class Main {
             rootNum++;
         }
         return rootNum;
-
+        
     }
     
-    public static int getRootFromChord(String s, int prevNote, int min, int max) {
+    /** @param s chord name
+     * @param prevNote the previous note; if nothing set to 0
+     * @param min the minimum note value
+     * @param max the maximum note value
+     * @param traspose how much to traspose the note
+     * @return the root note */
+    public static int getRootFromChord(String s, int prevNote, int min, int max, int traspose) {
         int rootNum;
         if (prevNote != 0) {
-            rootNum = prevNote + relDistanceBetweenNotes(prevNote, getRootFromChord(s));
+            rootNum = prevNote + relDistanceBetweenNotes(prevNote, getRootFromChord(s) + traspose);
         } else {
-            rootNum = getRootFromChord(s);
+            rootNum = getRootFromChord(s) + traspose;
         }
         while (rootNum < min)
             rootNum += 12;
