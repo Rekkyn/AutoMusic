@@ -1,9 +1,9 @@
-package rekkyn.automusic.bass;
+package rekkyn.automusic.patterns;
 
 import rekkyn.automusic.*;
 import rekkyn.automusic.MidiFile.Track;
 
-public class AlternatingOctave implements Pattern {
+public class AlternatingOctave implements Playable {
     
     int prevNote = 0;
     

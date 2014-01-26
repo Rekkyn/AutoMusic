@@ -1,11 +1,11 @@
-package rekkyn.automusic.chords;
+package rekkyn.automusic.patterns;
 
 import java.util.ArrayList;
 
 import rekkyn.automusic.*;
 import rekkyn.automusic.MidiFile.Track;
 
-public class ClosestChord implements Pattern {
+public class ClosestChord implements Playable {
     
     public ArrayList<Integer> notes = new ArrayList<Integer>();
     public ArrayList<Integer> prevNotes = new ArrayList<Integer>();

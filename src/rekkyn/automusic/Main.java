@@ -7,8 +7,8 @@ import java.net.MalformedURLException;
 import javax.sound.midi.*;
 
 import rekkyn.automusic.MidiFile.Track;
-import rekkyn.automusic.bass.PopcornBass;
-import rekkyn.automusic.chords.ClosestChord;
+import rekkyn.automusic.patterns.ClosestChord;
+import rekkyn.automusic.patterns.PopcornBass;
 
 public class Main {
     
@@ -22,13 +22,14 @@ public class Main {
     
     public static void main(String[] args) throws Exception {
         
-        Song song = new Song().setProgression(new String[] { "C", "Bb", "F#", "Eb", "S" }).setChordLength(
-                new Integer[] { WHOLE, WHOLE, HALF + QUARTER, QUARTER, WHOLE });
+        Song song = new Song().setProgression(new String[] { "Cm", "Ab", "Eb", "Bb", "Cm", "Bb", "Ab", "Gm" })
+                .setChordLength(new Integer[] { WHOLE, WHOLE, WHOLE, WHOLE, WHOLE, WHOLE, WHOLE, WHOLE }).setKey("Cm");
         
         mf.progChange(0, Track.CHORDS);
         song.add(new ClosestChord(HALF), Track.CHORDS);
         mf.progChange(33, Track.BASS);
         song.add(new PopcornBass(), Track.BASS);
+        song.add(new Melody(), Track.MELODY);
         
         mf.writeToFile("test1.mid");
         

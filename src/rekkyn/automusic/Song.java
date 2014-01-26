@@ -9,6 +9,7 @@ public class Song {
     
     public static ArrayList<String> progression;
     public static ArrayList<Integer> chordLength;
+    public static String key;
     
     /** @param s list of chord names
      * @return this */
@@ -30,9 +31,14 @@ public class Song {
         return this;
     }
     
+    public Song setKey(String s) {
+        key = s;
+        return this;
+    }
+
     /** @param p the patern to add
      * @param track which track to add it on */
-    public void add(Pattern p, Track track) {
+    public void add(Playable p, Track track) {
         p.play(track);
     }
     
