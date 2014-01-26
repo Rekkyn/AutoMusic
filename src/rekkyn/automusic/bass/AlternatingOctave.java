@@ -1,9 +1,7 @@
 package rekkyn.automusic.bass;
 
-import rekkyn.automusic.Main;
+import rekkyn.automusic.*;
 import rekkyn.automusic.MidiFile.Track;
-import rekkyn.automusic.Pattern;
-import rekkyn.automusic.Song;
 
 public class AlternatingOctave implements Pattern {
     

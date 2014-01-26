@@ -4,16 +4,7 @@ import rekkyn.automusic.MidiFile.Track;
 import rekkyn.automusic.bass.PopcornBass;
 import rekkyn.automusic.chords.ClosestChord;
 
-
-
 public class Main {
-    
-    // Note lengths
-    // We are working with 32 ticks to the crotchet. So
-    // all the other note lengths can be derived from this
-    // basic figure. Note that the longest note we can
-    // represent with this code is one tick short of a
-    // two semibreves (i.e., 8 crotchets)
     
     public static final int SIXTEENTH = 4;
     public static final int EIGHTH = 8;
@@ -25,7 +16,7 @@ public class Main {
     
     public static void main(String[] args) throws Exception {
         
-        Song song = new Song().setProgression(new String[] { "C", "Bb", "F#", "Eb", "S" });
+        Song song = new Song().setProgression(new String[] { "A", "F", "B", "Em", "Bb", "F#", "Fm", "S" });
         
         mf.progChange(0, Track.CHORDS);
         song.add(new ClosestChord(WHOLE), Track.CHORDS);
@@ -36,6 +27,9 @@ public class Main {
         
     }
     
+    /** @param a first note
+     * @param b second note
+     * @return the absoluet distance between the two notes */
     public static int distanceBetweenNotes(int a, int b) {
         int n = Math.abs(a % 12 - b % 12);
         if (n > 6)
@@ -44,6 +38,10 @@ public class Main {
             return n;
     }
     
+    /** @param a first note
+     * @param b second note
+     * @return the relative distance between the 2 notes, i.e. positive or
+     *         negative */
     public static int relDistanceBetweenNotes(int a, int b) {
         int n = b % 12 - a % 12;
         if (n > 6)
@@ -54,34 +52,36 @@ public class Main {
             return n;
     }
     
+    /** @param s chord name
+     * @return the note that is the root of the chord */
     public static int getRootFromChord(String s) {
         char root = s.charAt(0);
         int rootNum = 0;
         switch (root) {
-        case 'F':
-            rootNum = 53;
-            break;
-        case 'G':
-            rootNum = 55;
-            break;
-        case 'A':
-            rootNum = 57;
-            break;
-        case 'B':
-            rootNum = 59;
-            break;
-        case 'C':
-            rootNum = 60;
-            break;
-        case 'D':
-            rootNum = 62;
-            break;
-        case 'E':
-            rootNum = 64;
-            break;
-        default:
-            System.out.println("Ya dun gooft.");
-            break;
+            case 'F':
+                rootNum = 53;
+                break;
+            case 'G':
+                rootNum = 55;
+                break;
+            case 'A':
+                rootNum = 57;
+                break;
+            case 'B':
+                rootNum = 59;
+                break;
+            case 'C':
+                rootNum = 60;
+                break;
+            case 'D':
+                rootNum = 62;
+                break;
+            case 'E':
+                rootNum = 64;
+                break;
+            default:
+                System.out.println("Ya dun gooft.");
+                break;
         }
         
         if (s.contains("b") && s.contains("#")) {
@@ -93,6 +93,20 @@ public class Main {
         }
         return rootNum;
         
+    }
+    
+    public static int getRootFromChord(String s, int prevNote, int min, int max) {
+        int rootNum;
+        if (prevNote != 0) {
+            rootNum = prevNote + relDistanceBetweenNotes(prevNote, getRootFromChord(s));
+        } else {
+            rootNum = getRootFromChord(s);
+        }
+        while (rootNum < min)
+            rootNum += 12;
+        while (rootNum > max)
+            rootNum -= 12;
+        return rootNum;
     }
     
 }

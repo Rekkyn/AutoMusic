@@ -2,10 +2,8 @@ package rekkyn.automusic.chords;
 
 import java.util.ArrayList;
 
-import rekkyn.automusic.Main;
+import rekkyn.automusic.*;
 import rekkyn.automusic.MidiFile.Track;
-import rekkyn.automusic.Pattern;
-import rekkyn.automusic.Song;
 
 public class ClosestChord implements Pattern {
     
@@ -97,6 +95,5 @@ public class ClosestChord implements Pattern {
             notes.clear();
         }
     }
-    
     
 }
