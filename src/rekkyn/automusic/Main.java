@@ -11,20 +11,21 @@ public class Main {
     public static final int QUARTER = 16;
     public static final int HALF = 32;
     public static final int WHOLE = 64;
-    
+
     public static MidiFile mf = new MidiFile();
-    
+
     public static void main(String[] args) throws Exception {
-        
-        Song song = new Song().setProgression(new String[] { "A", "F", "B", "Em", "Bb", "F#", "Fm", "S" });
-        
+
+        Song song = new Song().setProgression(new String[]{"C", "Bb", "F#", "Eb", "S"})
+                              .setChordLength(new Integer[]{WHOLE, WHOLE, HALF + QUARTER, QUARTER, WHOLE});
+
         mf.progChange(0, Track.CHORDS);
-        song.add(new ClosestChord(WHOLE), Track.CHORDS);
+        song.add(new ClosestChord(HALF), Track.CHORDS);
         mf.progChange(33, Track.BASS);
         song.add(new PopcornBass(), Track.BASS);
-        
+
         mf.writeToFile("test1.mid");
-        
+
     }
     
     /** @param a first note
@@ -83,7 +84,7 @@ public class Main {
                 System.out.println("Ya dun gooft.");
                 break;
         }
-        
+
         if (s.contains("b") && s.contains("#")) {
             System.out.println("Nice try.");
         } else if (s.contains("b")) {
@@ -92,7 +93,7 @@ public class Main {
             rootNum++;
         }
         return rootNum;
-        
+
     }
     
     public static int getRootFromChord(String s, int prevNote, int min, int max) {
